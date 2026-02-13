@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #2A0A14 0%, #3A0F1B 25%, #4A1525 50%, #3A0F1B 75%, #2A0A14 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #F5F5F5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen {
+            display: none;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: clamp(2.8rem, 7vw, 4.2rem);
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+            color: #F4D58D;
+            letter-spacing: 0.03em;
+            line-height: 1.3;
+            font-style: italic;
+            text-align: center;
+            width: 100%;
+        }
+
+        .valentine-question {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: clamp(4rem, 12vw, 7rem);
+            font-weight: 300;
+            margin-bottom: 4rem;
+            color: #E63946;
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            font-style: italic;
+            text-shadow: 0 4px 20px rgba(230, 57, 70, 0.3);
+            animation: pulse 3s ease-in-out infinite;
+            text-align: center;
+            width: 100%;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.95; }
+        }
+
+        .subtext {
+            font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+            line-height: 1.9;
+            color: rgba(245, 245, 245, 0.95);
+            margin-bottom: 3.5rem;
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1) 0.4s, transform 1s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+            text-align: center;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .subtext.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .button {
+            background: transparent;
+            border: 1.5px solid #E63946;
+            color: #E63946;
+            padding: 1.1rem 3rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1) 0.7s, transform 1s cubic-bezier(0.4, 0, 0.2, 1) 0.7s, background 0.4s ease, color 0.4s ease, border 0.4s ease;
+            margin: 0.75rem;
+            min-width: 180px;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .button.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .button:hover {
+            background: #E63946;
+            color: #2A0A14;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(230, 57, 70, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(-1px);
+        }
+
+        .button.yes {
+            background: #E63946;
+            color: #2A0A14;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 1.3rem 4rem;
+            min-width: 220px;
+            text-transform: none;
+            letter-spacing: 0.02em;
+        }
+
+        .button.yes:hover {
+            background: #F4D58D;
+            border-color: #F4D58D;
+            color: #2A0A14;
+            box-shadow: 0 8px 30px rgba(244, 213, 141, 0.5);
+        }
+
+        .button.no {
+            border-color: rgba(153, 153, 153, 0.5);
+            color: rgba(153, 153, 153, 0.8);
+            position: relative;
+        }
+
+        .button.no:hover {
+            background: transparent;
+            border-color: rgba(153, 153, 153, 0.5);
+            color: rgba(153, 153, 153, 0.8);
+        }
+
+        .button.no.moving {
+            transition: none !important;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            opacity: 0.75;
+            animation: rain 8s linear infinite;
+            user-select: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .heart svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .heart.small {
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+        }
+
+        .heart.medium {
+            width: 22px;
+            height: 22px;
+            opacity: 0.7;
+        }
+
+        .heart.large {
+            width: 30px;
+            height: 30px;
+            opacity: 0.85;
+        }
+
+        @keyframes rain {
+            0% {
+                transform: translateY(-150px) translateX(0) rotate(0deg) scale(0.6);
+                opacity: 0;
+            }
+            8% {
+                opacity: 0.75;
+            }
+            92% {
+                opacity: 0.75;
+            }
+            100% {
+                transform: translateY(calc(100vh + 150px)) translateX(var(--drift, 50px)) rotate(360deg) scale(1.1);
+                opacity: 0;
+            }
+        }
+
+        .password-screen {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            width: 100%;
+            padding: 2rem 0;
+        }
+
+        .password-title {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 300;
+            color: #F4D58D;
+            letter-spacing: 0.03em;
+            font-style: italic;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease forwards;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .password-input-container {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease 0.5s forwards;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto;
+        }
+
+        .password-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(230, 57, 70, 0.5);
+            color: #F5F5F5;
+            padding: 1.3rem 2rem;
+            font-size: 1.15rem;
+            font-family: inherit;
+            text-align: center;
+            width: 100%;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+            border-radius: 2px;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #E63946;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(230, 57, 70, 0.3);
+        }
+
+        .password-input::placeholder {
+            color: rgba(245, 245, 245, 0.5);
+        }
+
+        .error-message {
+            color: #E63946;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            min-height: 1.5rem;
+        }
+
+        .error-message.show {
+            opacity: 1;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        @media (min-width: 1024px) {
+            .password-title {
+                margin-bottom: 3.5rem;
+                font-size: 4rem;
+            }
+
+            .password-input-container {
+                max-width: 400px;
+            }
+
+            .password-input {
+                padding: 1.4rem 2.2rem;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+
+            .password-screen {
+                padding: 1.5rem 0;
+            }
+
+            .password-title {
+                margin-bottom: 2.5rem;
+                text-align: center;
+            }
+
+            .password-input-container {
+                max-width: 100%;
+            }
+
+            .password-input {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            h1 {
+                margin-bottom: 2rem;
+            }
+
+            .valentine-question {
+                margin-bottom: 3rem;
+            }
+
+            .subtext {
+                margin-bottom: 2.5rem;
+                font-size: 1.1rem;
+            }
+
+            .button {
+                padding: 1rem 2.5rem;
+                font-size: 0.85rem;
+                display: block;
+                width: 100%;
+                max-width: 300px;
+                margin: 0.5rem auto;
+            }
+
+            .button.yes {
+                font-size: 1rem;
+                padding: 1.2rem 3rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="heartsContainer"></div>
+    
+    <div class="container">
+        <!-- Password Screen -->
+        <div class="screen active password-screen" id="passwordScreen">
+            <div class="password-title" id="passwordTitle">Is this Anika?</div>
+            <div class="password-input-container">
+                <input type="password" class="password-input" id="passwordInput" placeholder="Enter password" autocomplete="off">
+                <div class="error-message" id="errorMessage">Incorrect password. Try again.</div>
+            </div>
+        </div>
+
+        <!-- Screen 1 -->
+        <div class="screen" id="screen1">
+            <h1>Hi Anika</h1>
+            <div class="subtext" id="subtext1">
+                I know this is a little late<br>
+                but I wanted to give you something<br>
+                you'd never see coming.
+            </div>
+            <button class="button" id="btn1">Continue</button>
+        </div>
+
+        <!-- Screen 2 -->
+        <div class="screen" id="screen2">
+            <h1>Because you matter to me.</h1>
+            <div class="subtext" id="subtext2">
+                I can't believe it has been a whole year of us.<br>
+                From Dallas to Chicago to Austin to Santa Clara.<br>
+                I can't wait to hold your hand for what's next baby.
+            </div>
+            <button class="button" id="btn2">Keep going</button>
+        </div>
+
+        <!-- Screen 3 -->
+        <div class="screen" id="screen3">
+            <div class="valentine-question" id="valentineQuestion">Will you be my Valentine?</div>
+            <div class="button-group">
+                <button class="button yes" id="btnYes">Yes</button>
+                <button class="button no" id="btnNo">No</button>
+            </div>
+        </div>
+
+        <!-- Final Screen -->
+        <div class="screen" id="screenFinal">
+            <h1>You just made my day.</h1>
+            <div class="subtext" id="subtextFinal">
+                February 14th.<br>
+                It's ours.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Start raining hearts
+        function startRainingHearts() {
+            const heartsContainer = document.getElementById('heartsContainer');
+            
+            function createHeart() {
+                const heart = document.createElement('div');
+                
+                // Random size class
+                const sizes = ['small', 'medium', 'large'];
+                const sizeClass = sizes[Math.floor(Math.random() * sizes.length)];
+                heart.className = `heart ${sizeClass}`;
+                
+                // Random color variation with better colors
+                const colors = [
+                    { fill: '#E63946', glow: 'rgba(230, 57, 70, 0.6)' },
+                    { fill: '#F4D58D', glow: 'rgba(244, 213, 141, 0.5)' },
+                    { fill: '#FF6B9D', glow: 'rgba(255, 107, 157, 0.5)' },
+                    { fill: '#FFB3BA', glow: 'rgba(255, 179, 186, 0.4)' },
+                    { fill: '#FF8C94', glow: 'rgba(255, 140, 148, 0.5)' }
+                ];
+                const colorData = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Create beautiful SVG heart
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+                
+                // Create gradient for depth
+                const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+                gradient.setAttribute('id', `grad-${Date.now()}-${Math.random()}`);
+                gradient.setAttribute('x1', '0%');
+                gradient.setAttribute('y1', '0%');
+                gradient.setAttribute('x2', '100%');
+                gradient.setAttribute('y2', '100%');
+                
+                const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+                stop1.setAttribute('offset', '0%');
+                stop1.setAttribute('stop-color', colorData.fill);
+                stop1.setAttribute('stop-opacity', '1');
+                
+                const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+                stop2.setAttribute('offset', '100%');
+                const darkerColor = colorData.fill === '#F4D58D' ? '#D4B56D' : 
+                                   colorData.fill === '#E63946' ? '#C62936' :
+                                   colorData.fill === '#FF6B9D' ? '#E65B8D' :
+                                   colorData.fill === '#FFB3BA' ? '#FF9BA3' : '#E87C84';
+                stop2.setAttribute('stop-color', darkerColor);
+                stop2.setAttribute('stop-opacity', '0.9');
+                
+                gradient.appendChild(stop1);
+                gradient.appendChild(stop2);
+                defs.appendChild(gradient);
+                svg.appendChild(defs);
+                
+                // Create heart path (beautiful curved heart shape)
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', 'M12,21.35l-1.45-1.32C5.4,15.36,2,12.28,2,8.5 C2,5.42,4.42,3,7.5,3c1.74,0,3.41,0.81,4.5,2.09C13.09,3.81,14.76,3,16.5,3 C19.58,3,22,5.42,22,8.5c0,3.78-3.4,6.86-8.55,11.54L12,21.35z');
+                path.setAttribute('fill', `url(#${gradient.getAttribute('id')})`);
+                path.setAttribute('stroke', colorData.fill);
+                path.setAttribute('stroke-width', '0.5');
+                path.setAttribute('stroke-opacity', '0.3');
+                
+                svg.appendChild(path);
+                heart.appendChild(svg);
+                
+                // Set glow effect with multiple shadows for depth
+                heart.style.filter = `
+                    drop-shadow(0 0 4px ${colorData.glow}) 
+                    drop-shadow(0 0 8px ${colorData.glow}) 
+                    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))
+                `;
+                heart.style.color = colorData.fill;
+                
+                // Random position and animation
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 1.5 + 's';
+                const duration = 7 + Math.random() * 4;
+                heart.style.animationDuration = duration + 's';
+                heart.style.animationTimingFunction = 'linear';
+                
+                // Random horizontal drift for natural movement
+                const drift = (Math.random() - 0.5) * 80;
+                heart.style.setProperty('--drift', drift + 'px');
+                
+                heartsContainer.appendChild(heart);
+
+                setTimeout(() => {
+                    if (heart.parentNode) {
+                        heart.remove();
+                    }
+                }, duration * 1000 + 1000);
+            }
+
+            // Create hearts continuously with better spacing
+            setInterval(createHeart, 500);
+            
+            // Create initial batch
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => createHeart(), i * 120);
+            }
+        }
+
+        // Password handling
+        const passwordInput = document.getElementById('passwordInput');
+        const errorMessage = document.getElementById('errorMessage');
+        const correctPassword = 'valentines';
+
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const enteredPassword = passwordInput.value.toLowerCase().trim();
+                if (enteredPassword === correctPassword) {
+                    errorMessage.classList.remove('show');
+                    showScreen(1);
+                    startRainingHearts();
+                } else {
+                    errorMessage.classList.add('show');
+                    passwordInput.value = '';
+                    passwordInput.style.borderColor = '#E63946';
+                    setTimeout(() => {
+                        passwordInput.style.borderColor = 'rgba(230, 57, 70, 0.5)';
+                    }, 500);
+                }
+            }
+        });
+
+        // Screen management
+        let currentScreen = 0; // 0 = password, 1 = screen1, 2 = screen2, etc.
+        const screens = ['passwordScreen', 'screen1', 'screen2', 'screen3', 'screenFinal'];
+
+        function showScreen(screenNum) {
+            const current = document.getElementById(screens[currentScreen]);
+            if (current) {
+                current.classList.remove('active');
+            }
+
+            currentScreen = screenNum;
+            const newScreen = document.getElementById(screens[currentScreen]);
+            if (newScreen) {
+                setTimeout(() => {
+                    newScreen.classList.add('active');
+                    
+                    if (screenNum === 3) {
+                        // Special handling for valentine question screen
+                        const question = document.getElementById('valentineQuestion');
+                        const buttons = newScreen.querySelectorAll('.button');
+                        
+                        setTimeout(() => {
+                            if (question) {
+                                question.style.opacity = '1';
+                                question.style.transform = 'translateY(0)';
+                            }
+                        }, 300);
+                        
+                        buttons.forEach((btn, index) => {
+                            setTimeout(() => {
+                                btn.classList.add('visible');
+                            }, 800 + (index * 200));
+                        });
+                    } else if (screenNum !== 0) {
+                        // Don't animate password screen
+                        const subtext = newScreen.querySelector('.subtext');
+                        const button = newScreen.querySelector('.button');
+                        
+                        if (subtext) {
+                            setTimeout(() => {
+                                subtext.classList.add('visible');
+                            }, 400);
+                        }
+                        
+                        if (button) {
+                            setTimeout(() => {
+                                button.classList.add('visible');
+                            }, 800);
+                        }
+                    }
+                }, 500);
+            }
+        }
+
+        // Button handlers
+        document.getElementById('btn1').addEventListener('click', () => {
+            showScreen(2);
+        });
+
+        document.getElementById('btn2').addEventListener('click', () => {
+            showScreen(3);
+        });
+
+        document.getElementById('btnYes').addEventListener('click', () => {
+            showScreen(4);
+        });
+
+        // No button - random movement on hover
+        const btnNo = document.getElementById('btnNo');
+        let moveInterval = null;
+
+        btnNo.addEventListener('mouseenter', () => {
+            btnNo.classList.add('moving');
+            moveInterval = setInterval(() => {
+                const maxX = window.innerWidth - btnNo.offsetWidth - 40;
+                const maxY = window.innerHeight - btnNo.offsetHeight - 40;
+                const randomX = Math.max(20, Math.random() * maxX);
+                const randomY = Math.max(20, Math.random() * maxY);
+                
+                btnNo.style.position = 'fixed';
+                btnNo.style.left = randomX + 'px';
+                btnNo.style.top = randomY + 'px';
+            }, 250);
+        });
+
+        btnNo.addEventListener('mouseleave', () => {
+            if (moveInterval) {
+                clearInterval(moveInterval);
+                moveInterval = null;
+            }
+            btnNo.classList.remove('moving');
+            setTimeout(() => {
+                btnNo.style.position = '';
+                btnNo.style.left = '';
+                btnNo.style.top = '';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
